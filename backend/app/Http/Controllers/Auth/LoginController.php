@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -36,5 +39,29 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+    // ログインボタンからのリンク
+    public function redirectToProvider(string $provider)
+    {
+        return Socialite::driver($provider)->redirect();
+    }
+    // callback処理
+    public function handleProviderCallback($provider)
+    {
+        $userSocial = Socialite::driver($provider)->stateless()->user();
+        $user = User::where(["email" => $userSocial->getEmail()])->first();
+
+        if ($user) {
+            Auth::login($user);
+            return redirect('/home');
+        } else {
+            $newuser = new User;
+            $newuser->name = $userSocial->getName();
+            $newuser->email = $userSocial->getEmail();
+            $newuser->save();
+
+            Auth::login($newuser);
+            return redirect('/home');
+        }
     }
 }
