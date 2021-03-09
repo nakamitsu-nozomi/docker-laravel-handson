@@ -11,12 +11,14 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+// Route::get('/home', 'HomeController@index')->name('home');
 Route::get("login/{provider}", "Auth\LoginController@redirectToProvider")->name('login.{provider}');
 Route::get('login/{provider}/callback', 'Auth\LoginController@handleProviderCallback');
+Route::get('/', 'LocationController@index');
+Route::resource('/locations', 'LocationController', ['except' => ['show', 'index']]);
