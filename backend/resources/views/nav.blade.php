@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand navbar-dark blue-gradient">
-  <a class="navbar-brand" href="/"><i class="far fa-sticky-note mr-1"></i>weather</a>
+  <a class="navbar-brand" href="{{route("users.show",["name"=>Auth::user()->name])}}"><i class="far fa-sticky-note mr-1"></i>weather</a>
 
   <ul class="navbar-nav ml-auto">
   @guest
@@ -13,6 +13,9 @@
       @endif
   @else
       <li class="nav-item dropdown">
+          <li class="nav-item">
+              <a class="nav-link" href="{{ route('locations.create') }}">位置情報を登録</a>
+          </li>
           <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
               {{ Auth::user()->name }} <span class="caret"></span>
           </a>

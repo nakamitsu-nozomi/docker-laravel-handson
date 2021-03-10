@@ -53,7 +53,7 @@ class LoginController extends Controller
 
         if ($user) {
             Auth::login($user);
-            return redirect('/');
+            return redirect()->route("users.show", ["name" => $user->name]);
         } else {
             $newuser = new User;
             $newuser->name = $userSocial->getName();
@@ -61,7 +61,7 @@ class LoginController extends Controller
             $newuser->save();
 
             Auth::login($newuser);
-            return redirect('/');
+            return redirect()->route("users.show", ["name" => $newuser->name]);
         }
     }
 }
