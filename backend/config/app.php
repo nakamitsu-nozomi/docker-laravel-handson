@@ -27,6 +27,7 @@ return [
     */
 
     'env' => env('APP_ENV', 'production'),
+    'weather' => env('OPEN_WEATHER_API_KEY'),
 
     /*
     |--------------------------------------------------------------------------
