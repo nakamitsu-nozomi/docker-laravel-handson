@@ -18,7 +18,7 @@ class LocationPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        return $user->id === $location->user_id;
     }
 
     /**
@@ -30,7 +30,7 @@ class LocationPolicy
      */
     public function view(User $user, Location $location)
     {
-        //
+        return $user->id === $location->user_id;
     }
 
     /**
