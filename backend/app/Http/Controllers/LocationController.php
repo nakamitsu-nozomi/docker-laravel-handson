@@ -6,6 +6,7 @@ use App\Http\Requests\LocationRequest as RequestsLocationRequest;
 use Illuminate\Http\Request;
 use App\http\Requests\LocationRequest;
 use App\Location;
+use App\PostalCode;
 use App\User;
 use \Datetime;
 use \DateTimeZone;
@@ -26,8 +27,16 @@ class LocationController extends Controller
     {
         $location->fill($request->all());
         $location->user_id = $request->user()->id;
-        $location->save();
-        return redirect()->route("users.show", ["name" => $request->user()->name]);
+        $zipcode = $location->zipcode;
+        $first_code   = intval(substr($zipcode, 0, 3));
+        $last_code   = intval(substr($zipcode, 3));
+        $a = PostalCode::whereSearch($first_code, $last_code)->first();
+        if ($a === null) {
+            return redirect('locations/create')->withInput();
+        } else {
+            $location->save();
+            return redirect()->route("users.show", ["name" => $request->user()->name]);
+        }
     }
 
     public function edit(Location $location)

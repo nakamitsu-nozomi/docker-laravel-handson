@@ -14,7 +14,7 @@
                 @csrf
                 <div class="md-form">
                   <label>天気を知りたい場所の郵便番号(ハイフンなし)を入力</label>
-                  <input type="text" name="zipcode" class="form-control" required value="{{ $location->zipcode ?? old('zipocode') }}">
+                  <input type="text" name="zipcode" class="form-control" required value="{{ $location->zipcode ?? old('zipcode') }}">
                 </div>
                 <button type="submit" class="btn blue-gradient btn-block">登録する</button>
               </form>
