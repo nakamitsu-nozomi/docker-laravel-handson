@@ -70,9 +70,6 @@ class Location extends Model
                 return $arg;
         }
     }
-    // マジックナンバーの定義
-    const TOMORROW_WEATHER_COUNT = 8;
-
     public static function zipcode($zipcode)
     {
         //最初から3文字分を取得する
