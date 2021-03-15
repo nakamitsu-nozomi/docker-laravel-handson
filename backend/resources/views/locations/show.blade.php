@@ -32,7 +32,7 @@
               <i class="fas fa-pen mr-1"></i>位置情報を更新する
             </a>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item text-danger" data-toggle="modal" data-target="#modal-delete-{{ $location }}">
+            <a class="dropdown-item text-danger" data-toggle="modal" data-target="#modal-delete-{{$location->id}}">
               <i class="fas fa-trash-alt mr-1"></i>位置情報を削除する
             </a>
           </div>
