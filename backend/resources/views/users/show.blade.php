@@ -16,6 +16,9 @@
       <div class="font-weight-bold">
         郵便番号：  {{$location->zipcode}}
      </div> 
+      <div class="font-weight-bold">
+        位置情報：  {{$location->address}}
+     </div> 
 
       </a> 
       </div>

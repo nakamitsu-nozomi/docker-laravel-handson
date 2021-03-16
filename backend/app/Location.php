@@ -9,6 +9,7 @@ class Location extends Model
 {
     public $fillable = [
         "zipcode",
+        "address",
     ];
     public function user(): BelongsTo
     {

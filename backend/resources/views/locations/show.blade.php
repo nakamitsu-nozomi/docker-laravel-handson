@@ -10,12 +10,12 @@
       <i class="far fa-question-circle fa-3x mr-1"></i>
       <div>
         <div class="font-weight-bold">
-  郵便番号：  {{$location->zipcode}}
+          郵便番号：  {{$location->zipcode}}
         </div> 
         <div class="font-weight-lighter">
-                  <h1 class="h3 card-title ">
-        {{$tomorrow}}の天気
-      </h1>
+        <h1 class="h4 card-title ">
+          {{$location->address}}の {{$tomorrow}}の天気
+        </h1>
         </div>
       </div>
     @if( Auth::id() === $location->user_id )
