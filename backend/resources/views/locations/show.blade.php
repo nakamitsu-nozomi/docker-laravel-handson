@@ -10,12 +10,12 @@
       <i class="far fa-question-circle fa-3x mr-1"></i>
       <div>
         <div class="font-weight-bold">
-  郵便番号：  {{$location->zipcode}}
+          郵便番号：  {{$location->zipcode}}
         </div> 
         <div class="font-weight-lighter">
-                  <h1 class="h3 card-title ">
-        {{$tomorrow}}の天気
-      </h1>
+        <h1 class="h4 card-title ">
+          {{$location->address}}の {{$tomorrow}}の天気
+        </h1>
         </div>
       </div>
     @if( Auth::id() === $location->user_id )
@@ -32,7 +32,7 @@
               <i class="fas fa-pen mr-1"></i>位置情報を更新する
             </a>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item text-danger" data-toggle="modal" data-target="#modal-delete-{{ $location }}">
+            <a class="dropdown-item text-danger" data-toggle="modal" data-target="#modal-delete-{{$location->id}}">
               <i class="fas fa-trash-alt mr-1"></i>位置情報を削除する
             </a>
           </div>

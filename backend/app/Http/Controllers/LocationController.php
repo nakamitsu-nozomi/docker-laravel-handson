@@ -6,10 +6,13 @@ use App\Http\Requests\LocationRequest as RequestsLocationRequest;
 use Illuminate\Http\Request;
 use App\http\Requests\LocationRequest;
 use App\Location;
+use App\PostalCode;
 use App\User;
 use \Datetime;
 use \DateTimeZone;
 use Illuminate\Support\Facades\Auth;
+use Validator;
+
 
 class LocationController extends Controller
 {
@@ -22,12 +25,25 @@ class LocationController extends Controller
     {
         return view("locations/create");
     }
-    public function store(LocationRequest $request, Location $location)
+    public function store(LocationRequest $request)
     {
+        $location = new Location();
         $location->fill($request->all());
+        $location->zipcode = $request->zipcode;
+        $location->address = $request->addr11;
         $location->user_id = $request->user()->id;
-        $location->save();
-        return redirect()->route("users.show", ["name" => $request->user()->name]);
+        $zipcode = $location->zipcode;
+        $first_code   = intval(substr($zipcode, 0, 3));
+        $last_code   = intval(substr($zipcode, 3));
+        $a = PostalCode::whereSearch($first_code, $last_code)->first();
+        if ($a === null) {
+            $error[] = "この郵便番号は実在しません";
+            return redirect('locations/create')->withInput()->withErrors($error);
+        } else {
+
+            $location->save();
+            return redirect()->route("users.show", ["name" => $request->user()->name]);
+        }
     }
 
     public function edit(Location $location)
@@ -36,8 +52,23 @@ class LocationController extends Controller
     }
     public function update(Request $request, Location $location)
     {
-        $location->fill($request->all())->save();
-        return redirect()->route("users.show", ["name" => $request->user()->name]);
+
+        $location->fill($request->all());
+        $location->zipcode = $request->zipcode;
+        $location->address = $request->addr11;
+        $location->user_id = $request->user()->id;
+        $zipcode = $location->zipcode;
+        $first_code   = intval(substr($zipcode, 0, 3));
+        $last_code   = intval(substr($zipcode, 3));
+        $a = PostalCode::whereSearch($first_code, $last_code)->first();
+        if ($a === null) {
+            $error[] = "この郵便番号は実在しません";
+            return redirect('locations/create')->withInput()->withErrors($error);
+        } else {
+
+            $location->fill($request->all())->save();
+            return redirect()->route("users.show", ["name" => $request->user()->name]);
+        }
     }
     public function destroy(Request $request, Location $location)
     {

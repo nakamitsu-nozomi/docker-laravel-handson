@@ -28,6 +28,9 @@ class LocationRequest extends FormRequest
                 "required",
                 'digits:7'
             ],
+            "addr11" => [
+                "required"
+            ],
 
         ];
     }
@@ -35,6 +38,8 @@ class LocationRequest extends FormRequest
     {
         return [
             "zipcode" => "郵便番号",
+            "address" => "位置情報",
+            "addr11" => "位置情報",
         ];
     }
 }
