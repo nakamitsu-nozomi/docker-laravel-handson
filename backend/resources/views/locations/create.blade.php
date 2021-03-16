@@ -8,7 +8,15 @@
       <div class="col-12">
         <div class="card mt-3">
           <div class="card-body pt-0">
-            {{-- @include('error_card_list') --}}
+            @include('error_card_list')
+            {{-- @if ($msg ?? '')
+              <div class="card-text text-left alert alert-danger">
+              <ul class="mb-0">
+                  <li>{{$msg ?? ''}}</li>
+              </ul>
+              </div>  
+            @endif
+     --}}
             <div class="card-text">
               <form method="POST" action="{{ route('locations.store') }}">
                 @csrf

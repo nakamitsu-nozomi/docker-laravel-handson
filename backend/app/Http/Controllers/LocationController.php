@@ -11,6 +11,8 @@ use App\User;
 use \Datetime;
 use \DateTimeZone;
 use Illuminate\Support\Facades\Auth;
+use Validator;
+
 
 class LocationController extends Controller
 {
@@ -32,7 +34,8 @@ class LocationController extends Controller
         $last_code   = intval(substr($zipcode, 3));
         $a = PostalCode::whereSearch($first_code, $last_code)->first();
         if ($a === null) {
-            return redirect('locations/create')->withInput();
+            $error[] = "この郵便番号は実在しません";
+            return redirect('locations/create')->withInput()->withErrors($error);
         } else {
             $location->save();
             return redirect()->route("users.show", ["name" => $request->user()->name]);
