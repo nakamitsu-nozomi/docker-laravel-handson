@@ -72,7 +72,9 @@
     </div>
 
   </div>
+    
   @endforeach
+ {{$locations->links()}}
   </div>
 @endsection
 
