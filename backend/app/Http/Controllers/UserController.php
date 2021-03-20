@@ -21,7 +21,10 @@ class UserController extends Controller
 
         $user = User::where("name", $name)->first();
         if (Auth::id() === $user->id) {
-            $locations = $user->locations->sortByDesc("created_at");
+
+            $locations = $user->locations()->paginate(5);
+            $locations->sortByDesc("created_at");
+
             $temps = [];
             return view("users.show", compact("locations", "user"));
         } else {
