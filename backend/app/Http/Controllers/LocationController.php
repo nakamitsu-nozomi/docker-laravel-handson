@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LocationRequest as RequestsLocationRequest;
 use Illuminate\Http\Request;
-use App\http\Requests\LocationRequest;
+use App\Http\Requests\LocationRequest;
 use App\Location;
 use App\PostalCode;
 use App\User;
