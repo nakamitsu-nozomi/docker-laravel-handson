@@ -31,7 +31,6 @@ class LoginController extends Controller
      */
     public function redirectTo()
     {
-        dd(Auth::user());
         if (!Auth::user()) {
             return '/';
         }
