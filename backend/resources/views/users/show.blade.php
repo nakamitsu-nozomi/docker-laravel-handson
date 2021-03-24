@@ -4,7 +4,7 @@
 
 
 @section('content')
-
+@include('error_card_list')
   <div class="container">
    @foreach ($locations as $location)
 
@@ -14,7 +14,7 @@
       <i class="far fa-question-circle fa-3x mr-1"></i>
       <div>
       <div class="font-weight-bold">
-        郵便番号：  {{$location->zipcode}}
+        郵便番号：  {{ sprintf('%07d', $location->zipcode)}}
      </div> 
       <div class="font-weight-bold">
         位置情報：  {{$location->address}}
