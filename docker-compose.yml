@@ -16,6 +16,16 @@ services:
     build: ./infra/mysql
     volumes:
       - db-store:/var/lib/mysql
-
+  pma:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      - PMA_HOST=db
+      - PMA_USER=phper
+      - PMA_PASSWORD=secret
+    ports:
+      - 8080:80
+    volumes:
+      - pma-session-store:/sessions
 volumes:
   db-store:
+  pma-session-store:
