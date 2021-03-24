@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Location;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -40,16 +41,40 @@ class LocationControllerTest extends TestCase
     }
     ### 投稿画面表示機能のテスト ###
     // 未ログイン時
+    public function testGuestcreate()
+    {
+        $user = factory(User::class)->create();
+        $response = $this->get(route('locations.create'));
+        $response->assertRedirect(route('login'));
+    }
     // ログイン時
-
-
-
-
-
+    public function testAuthUsercreate()
+    {
+        $user = factory(User::class)->create();
+        $response = $this->actingAs($user)->get(route('locations.create'));
+        $response->assertStatus(200)->assertViewIs('locations.create');
+    }
 
 
     ### 投稿機能のテスト ###
+
     ### 投稿の編集画面 表示機能のテスト ###
+
+    // 未ログイン時
+    public function testGuestedit()
+    {
+        $location = factory(Location::class)->create();
+        $response = $this->get(route('locations.edit', ["location" => $location]));
+        $response->assertRedirect(route('login'));
+    }
+    // ログイン時
+    public function testAuthUseredit()
+    {
+        $location = factory(Location::class)->create();
+        $user = $location->user;
+        $response = $this->actingAs($user)->get(route('locations.edit', ["location" => $location]));
+        $response->assertStatus(200)->assertViewIs('locations.edit', ["location" => $location]);
+    }
     ### 投稿削除機能のテスト ###
 
 
