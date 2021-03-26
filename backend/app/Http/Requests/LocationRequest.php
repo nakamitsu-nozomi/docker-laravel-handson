@@ -32,6 +32,7 @@ class LocationRequest extends FormRequest
                 "required"
             ],
 
+            'tags' => 'json|regex:/^(?!.*\s).+$/u|regex:/^(?!.*\/).*$/u'
         ];
     }
     public function attributes()
@@ -40,6 +41,16 @@ class LocationRequest extends FormRequest
             "zipcode" => "郵便番号",
             "address" => "位置情報",
             "addr11" => "位置情報",
+            "tags" => "タグ",
         ];
+    }
+    // フォームリクエストのバリデーションが成功した後に自動的に呼ばれるメソッド
+    public function passedValidation()
+    {
+        $this->tags = collect(json_decode($this->tags))
+            ->slice(0, 5)
+            ->map(function ($requestTag) {
+                return $requestTag->text;
+            });
     }
 }

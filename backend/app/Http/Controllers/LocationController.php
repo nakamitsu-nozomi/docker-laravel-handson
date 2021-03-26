@@ -8,6 +8,7 @@ use App\Http\Requests\LocationRequest;
 use App\Location;
 use App\PostalCode;
 use App\User;
+use App\Tag;
 use \Datetime;
 use \DateTimeZone;
 use Illuminate\Support\Facades\Auth;
@@ -24,8 +25,12 @@ class LocationController extends Controller
     }
     public function create()
     {
-        return view("locations/create");
+        $allTagNames = Tag::all()->map(function ($tag) {
+            return ["text" => $tag->name];
+        });
+        return view("locations/create", ["allTagNames" => $allTagNames]);
     }
+
     public function store(LocationRequest $request)
     {
         $location = new Location();
@@ -43,15 +48,26 @@ class LocationController extends Controller
         } else {
 
             $location->save();
+            $request->tags->each(function ($tagName) use ($location) {
+                $tag = Tag::firstOrcreate(["name" => $tagName]);
+                $location->tags()->attach($tag);
+            });
             return redirect()->route("users.show", ["name" => $request->user()->name]);
         }
     }
 
     public function edit(Location $location)
     {
-        return view('locations.edit', ['location' => $location]);
+        $allTagNames = Tag::all()->map(function ($tag) {
+            return ["text" => $tag->name];
+        });
+        $tagNames = $location->tags->map(function ($tag) {
+            return ["text" => $tag->name];
+        });
+
+        return view('locations.edit', ['location' => $location, "tagNames" => $tagNames, "allTagNames" => $allTagNames]);
     }
-    public function update(Request $request, Location $location)
+    public function update(LocationRequest $request, Location $location)
     {
 
         $location->fill($request->all());
@@ -68,6 +84,11 @@ class LocationController extends Controller
         } else {
 
             $location->fill($request->all())->save();
+            $location->tags()->detach();
+            $request->tags->each(function ($tagName) use ($location) {
+                $tag = Tag::firstOrcreate(["name" => $tagName]);
+                $location->tags()->attach($tag);
+            });
             return redirect()->route("users.show", ["name" => $request->user()->name]);
         }
     }

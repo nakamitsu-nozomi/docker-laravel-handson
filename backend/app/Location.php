@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Location extends Model
 {
@@ -92,5 +93,10 @@ class Location extends Model
         $api_url = $api_base . $api_type . $api_parm;
 
         return json_decode(file_get_contents($api_url), true);
+    }
+
+    public function tags(): BelongsToMany
+    {
+        return $this->belongsToMany("App\Tag")->withTimestamps();
     }
 }
