@@ -8,13 +8,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Tag extends Model
 {
     protected $fillable = [
-        "name",
+        'name',
     ];
+
     // get...Attribute アクセサ
     public function getHashtagAttribute(): string
     {
-        return "#" . $this->name;
+        return '#' . $this->name;
     }
+
     public function locations(): BelongsToMany
     {
         return $this->belongsToMany('App\Location')->withTimestamps();
