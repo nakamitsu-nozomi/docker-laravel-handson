@@ -3,8 +3,6 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
-
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -41,6 +39,6 @@ class User extends Authenticatable
 
     public function locations(): HasMany
     {
-        return $this->hasMany("App\Location");
+        return $this->hasMany('App\\Location');
     }
 }

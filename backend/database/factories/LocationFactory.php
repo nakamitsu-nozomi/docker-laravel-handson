@@ -8,10 +8,10 @@ use Faker\Generator as Faker;
 
 $factory->define(Location::class, function (Faker $faker) {
     return [
-        "zipcode" => $faker->postcode,
-        "address" => $faker->address,
+        'zipcode' => $faker->postcode,
+        'address' => $faker->address,
         'user_id' => function () {
             return factory(User::class);
-        }
+        },
     ];
 });
