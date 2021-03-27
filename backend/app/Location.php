@@ -8,14 +8,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Location extends Model
 {
     public $fillable = [
-        "zipcode",
-        "address",
-        "user_id",
+        'zipcode',
+        'address',
+        'user_id',
     ];
+
     public function user(): BelongsTo
     {
-        return $this->belongsTo("App\User");
+        return $this->belongsTo('App\\User');
     }
+
     // 天気説明を日本語に変換
     public static function getTranslation($arg)
     {
@@ -72,14 +74,15 @@ class Location extends Model
                 return $arg;
         }
     }
+
     public static function zipcode($zipcode)
     {
         //最初から3文字分を取得する
-        $zip1    = substr($zipcode, 0, 3);
+        $zip1 = substr($zipcode, 0, 3);
         //4文字目から最後まで取得する
-        $zip2    = substr($zipcode, 3);
+        $zip2 = substr($zipcode, 3);
         //ハイフンで結合する
-        $zipcode = $zip1 . "-" . $zip2;
+        $zipcode = $zip1 . '-' . $zip2;
         return $zipcode;
     }
 

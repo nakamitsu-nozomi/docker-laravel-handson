@@ -6,9 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Auth;
 
 class RegisterController extends Controller
 {
@@ -26,6 +26,14 @@ class RegisterController extends Controller
     use RegistersUsers;
 
     /**
+     * Create a new controller instance.
+     */
+    public function __construct()
+    {
+        $this->middleware('guest');
+    }
+
+    /**
      * Where to redirect users after registration.
      *
      * @var string
@@ -39,25 +47,16 @@ class RegisterController extends Controller
         return
             route('users.show', ['name' => Auth::user()->name]);
     }
+
     protected function authenticated($request, $user)
     {
-        return redirect(route("users.show", ["name" => Auth::user()->name]));
-    }
-
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('guest');
+        return redirect(route('users.show', ['name' => Auth::user()->name]));
     }
 
     /**
      * Get a validator for an incoming registration request.
      *
-     * @param  array  $data
+     * @param array $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
     protected function validator(array $data)
@@ -72,7 +71,7 @@ class RegisterController extends Controller
     /**
      * Create a new user instance after a valid registration.
      *
-     * @param  array  $data
+     * @param array $data
      * @return \App\User
      */
     protected function create(array $data)

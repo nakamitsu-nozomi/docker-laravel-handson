@@ -24,22 +24,22 @@ class LocationRequest extends FormRequest
     public function rules()
     {
         return [
-            "zipcode" => [
-                "required",
-                'digits:7'
+            'zipcode' => [
+                'required',
+                'digits:7',
             ],
-            "addr11" => [
-                "required"
+            'addr11' => [
+                'required',
             ],
-
         ];
     }
+
     public function attributes()
     {
         return [
-            "zipcode" => "郵便番号",
-            "address" => "位置情報",
-            "addr11" => "位置情報",
+            'zipcode' => '郵便番号',
+            'address' => '位置情報',
+            'addr11' => '位置情報',
         ];
     }
 }
