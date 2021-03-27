@@ -24,26 +24,28 @@ class LocationRequest extends FormRequest
     public function rules()
     {
         return [
-            "zipcode" => [
-                "required",
-                'digits:7'
+            'zipcode' => [
+                'required',
+                'digits:7',
             ],
-            "addr11" => [
-                "required"
+            'addr11' => [
+                'required',
             ],
 
-            'tags' => 'json|regex:/^(?!.*\s).+$/u|regex:/^(?!.*\/).*$/u'
+            'tags' => 'json|regex:/^(?!.*\s).+$/u|regex:/^(?!.*\/).*$/u',
         ];
     }
+
     public function attributes()
     {
         return [
-            "zipcode" => "郵便番号",
-            "address" => "位置情報",
-            "addr11" => "位置情報",
-            "tags" => "タグ",
+            'zipcode' => '郵便番号',
+            'address' => '位置情報',
+            'addr11' => '位置情報',
+            'tags' => 'タグ',
         ];
     }
+
     // フォームリクエストのバリデーションが成功した後に自動的に呼ばれるメソッド
     public function passedValidation()
     {
