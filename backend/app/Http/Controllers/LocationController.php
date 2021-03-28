@@ -35,9 +35,9 @@ class LocationController extends Controller
         $zipcode = $location->zipcode;
         $first_code = intval(substr($zipcode, 0, 3));
         $last_code = intval(substr($zipcode, 3));
-        $a = PostalCode::whereSearch($first_code, $last_code)->first();
+        $searched_zipcode = PostalCode::whereSearch($first_code, $last_code)->first();
 
-        if ($a === null) {
+        if ($searched_zipcode === null) {
             $error[] = 'この郵便番号は実在しません';
             return redirect('locations/create')->withInput()->withErrors($error);
         }
@@ -60,9 +60,9 @@ class LocationController extends Controller
         $zipcode = $location->zipcode;
         $first_code = intval(substr($zipcode, 0, 3));
         $last_code = intval(substr($zipcode, 3));
-        $a = PostalCode::whereSearch($first_code, $last_code)->first();
+        $searched_zipcode = PostalCode::whereSearch($first_code, $last_code)->first();
 
-        if ($a === null) {
+        if ($searched_zipcode === null) {
             $error[] = 'この郵便番号は実在しません';
             return redirect('locations/create')->withInput()->withErrors($error);
         }
