@@ -2,14 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\UserService;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    public function __construct()
+    protected $userService;
+
+    public function __construct(UserService $user_service)
     {
+        $this->userService = $user_service;
         $this->middleware('auth');
     }
 
@@ -18,10 +22,7 @@ class UserController extends Controller
         $user = User::where('name', $name)->first();
 
         if (Auth::id() === $user->id) {
-            $locations = $user->locations()->paginate(5);
-            $locations->sortByDesc('created_at');
-
-            $temps = [];
+            $locations = $this->userService->getLocation($user);
             return view('users.show', compact('locations', 'user'));
         }
         return redirect()->route('users.show', ['name' => $request->user()->name]);
