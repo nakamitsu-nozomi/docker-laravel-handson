@@ -39,12 +39,12 @@ class WeatherShowService
         foreach ($weather_list as $items) {
             array_push($weathers, $this->weatherLocalizationService->getTranslation($items['weather'][0]['description']));
             array_push($temp_maxs, $items['main']['temp_max']); // 最高気温
-      array_push($temp_mins, $items['main']['temp_min']); // 最低気温
-      array_push($weather_icons, $items['weather'][0]['icon']); // 天気マーク
-      $datetime = new DateTime();
+            array_push($temp_mins, $items['main']['temp_min']); // 最低気温
+            array_push($weather_icons, $items['weather'][0]['icon']); // 天気マーク
+            $datetime = new DateTime();
             $datetime->setTimestamp($items['dt'])->setTimeZone(new DateTimeZone('Asia/Tokyo')); // 日時 - 協定世界時 (UTC)を日本標準時 (JST)に変換
-      array_push($dates, $datetime->format('Y年m月d日')); // 日付
-      array_push($times, $datetime->format('H:i')); // 時間
+            array_push($dates, $datetime->format('Y年m月d日')); // 日付
+            array_push($times, $datetime->format('H:i')); // 時間
         }
         return view('locations.show', compact('temp_maxs', 'user', 'weathers', 'temp_mins', 'weather_icons', 'dates', 'times', 'tomorrow', 'location'));
     }
