@@ -12,6 +12,8 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind('App\Services\UserService');
+        $this->app->bind('App\Services\WeatherService');
+        $this->app->bind('App\Services\WeatherLocalizationService');
     }
 
     /**
