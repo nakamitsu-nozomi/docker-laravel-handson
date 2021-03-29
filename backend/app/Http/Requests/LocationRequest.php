@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\PostalCode;
 use Illuminate\Foundation\Http\FormRequest;
 
 class LocationRequest extends FormRequest
@@ -27,6 +28,17 @@ class LocationRequest extends FormRequest
             'zipcode' => [
                 'required',
                 'digits:7',
+                function ($attribute, $value, $fail) {
+                    // 存在する郵便番号かチェックするバリテーション
+                    $zipcode = $this->input('zipcode');
+                    $first_code = intval(substr($zipcode, 0, 3));
+                    $last_code = intval(substr($zipcode, 3));
+                    $full_zipcode = PostalCode::whereSearch($first_code, $last_code)->first();
+
+                    if ($full_zipcode === null) {
+                        return $fail('この郵便番号は実在しません');
+                    }
+                },
             ],
             'addr11' => [
                 'required',
