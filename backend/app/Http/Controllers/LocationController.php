@@ -6,6 +6,7 @@ use App\Http\Requests\LocationRequest;
 use App\Location;
 use App\PostalCode;
 use App\Services\WeatherShowService;
+use App\Tag;
 use App\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -22,7 +23,10 @@ class LocationController extends Controller
 
     public function create()
     {
-        return view('locations/create');
+        $allTagNames = Tag::all()->map(function ($tag) {
+            return ['text' => $tag->name];
+        });
+        return view('locations/create', ['allTagNames' => $allTagNames]);
     }
 
     public function store(LocationRequest $request)
@@ -43,15 +47,28 @@ class LocationController extends Controller
         }
 
         $location->save();
+        $request->tags->each(function ($tagName) use ($location) {
+            $tag = Tag::firstOrcreate(['name' => $tagName]);
+            $location->tags()->attach($tag);
+        });
+        return redirect()->route('users.show', ['name' => $request->user()->name]);
+        $location->save();
         return redirect()->route('users.show', ['name' => $request->user()->name]);
     }
 
     public function edit(Location $location)
     {
-        return view('locations.edit', ['location' => $location]);
+        $allTagNames = Tag::all()->map(function ($tag) {
+            return ['text' => $tag->name];
+        });
+        $tagNames = $location->tags->map(function ($tag) {
+            return ['text' => $tag->name];
+        });
+
+        return view('locations.edit', ['location' => $location, 'tagNames' => $tagNames, 'allTagNames' => $allTagNames]);
     }
 
-    public function update(Request $request, Location $location)
+    public function update(LocationRequest $request, Location $location)
     {
         $location->fill($request->all());
         $location->zipcode = $request->zipcode;
@@ -67,6 +84,13 @@ class LocationController extends Controller
             return redirect('locations/create')->withInput()->withErrors($error);
         }
 
+        $location->fill($request->all())->save();
+        $location->tags()->detach();
+        $request->tags->each(function ($tagName) use ($location) {
+            $tag = Tag::firstOrcreate(['name' => $tagName]);
+            $location->tags()->attach($tag);
+        });
+        return redirect()->route('users.show', ['name' => $request->user()->name]);
         $location->fill($request->all())->save();
         return redirect()->route('users.show', ['name' => $request->user()->name]);
     }
