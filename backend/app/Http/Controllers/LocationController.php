@@ -5,22 +5,28 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LocationRequest;
 use App\Location;
 use App\PostalCode;
+use App\Services\WeatherShowService;
+use App\Tag;
 use App\User;
-use Datetime;
-use DateTimeZone;
 use Exception;
 use Illuminate\Http\Request;
 
 class LocationController extends Controller
 {
-    public function __construct()
+    protected $weatherShowService;
+
+    public function __construct(weatherShowService $weather_show_service)
     {
+        $this->weatherShowService = $weather_show_service;
         $this->authorizeResource(location::class, 'location');
     }
 
     public function create()
     {
-        return view('locations/create');
+        $allTagNames = Tag::all()->map(function ($tag) {
+            return ['text' => $tag->name];
+        });
+        return view('locations/create', ['allTagNames' => $allTagNames]);
     }
 
     public function store(LocationRequest $request)
@@ -33,23 +39,36 @@ class LocationController extends Controller
         $zipcode = $location->zipcode;
         $first_code = intval(substr($zipcode, 0, 3));
         $last_code = intval(substr($zipcode, 3));
-        $a = PostalCode::whereSearch($first_code, $last_code)->first();
+        $searched_zipcode = PostalCode::whereSearch($first_code, $last_code)->first();
 
-        if ($a === null) {
+        if ($searched_zipcode === null) {
             $error[] = 'この郵便番号は実在しません';
             return redirect('locations/create')->withInput()->withErrors($error);
         }
 
+        $location->save();
+        $request->tags->each(function ($tagName) use ($location) {
+            $tag = Tag::firstOrcreate(['name' => $tagName]);
+            $location->tags()->attach($tag);
+        });
+        return redirect()->route('users.show', ['name' => $request->user()->name]);
         $location->save();
         return redirect()->route('users.show', ['name' => $request->user()->name]);
     }
 
     public function edit(Location $location)
     {
-        return view('locations.edit', ['location' => $location]);
+        $allTagNames = Tag::all()->map(function ($tag) {
+            return ['text' => $tag->name];
+        });
+        $tagNames = $location->tags->map(function ($tag) {
+            return ['text' => $tag->name];
+        });
+
+        return view('locations.edit', ['location' => $location, 'tagNames' => $tagNames, 'allTagNames' => $allTagNames]);
     }
 
-    public function update(Request $request, Location $location)
+    public function update(LocationRequest $request, Location $location)
     {
         $location->fill($request->all());
         $location->zipcode = $request->zipcode;
@@ -58,13 +77,20 @@ class LocationController extends Controller
         $zipcode = $location->zipcode;
         $first_code = intval(substr($zipcode, 0, 3));
         $last_code = intval(substr($zipcode, 3));
-        $a = PostalCode::whereSearch($first_code, $last_code)->first();
+        $searched_zipcode = PostalCode::whereSearch($first_code, $last_code)->first();
 
-        if ($a === null) {
+        if ($searched_zipcode === null) {
             $error[] = 'この郵便番号は実在しません';
             return redirect('locations/create')->withInput()->withErrors($error);
         }
 
+        $location->fill($request->all())->save();
+        $location->tags()->detach();
+        $request->tags->each(function ($tagName) use ($location) {
+            $tag = Tag::firstOrcreate(['name' => $tagName]);
+            $location->tags()->attach($tag);
+        });
+        return redirect()->route('users.show', ['name' => $request->user()->name]);
         $location->fill($request->all())->save();
         return redirect()->route('users.show', ['name' => $request->user()->name]);
     }
@@ -79,36 +105,10 @@ class LocationController extends Controller
     {
         // ユーザーの表示
         $user = User::where('id', $location->user_id)->first();
-        $weathers = [];
-        $temp_maxs = [];
-        $temp_mins = [];
-        $weather_icons = [];
-        $dates = [];
-        $times = [];
-        $tomorrow = new DateTime('+1 day');
-        $tomorrow = $tomorrow->format('Y年m月d日');
-        $zipcode = Location::zipcode($location->zipcode);
-
+        //天気の表示
         try {
-            // 例外が発生するおそれがあるコード
-            $response = Location::getWeather('forecast', $zipcode);
-
-            $weather_list = $response['list'];
-
-            foreach ($weather_list as $items) {
-                array_push($weathers, Location::getTranslation($items['weather'][0]['description'])); // 天気
-                array_push($temp_maxs, $items['main']['temp_max']); // 最高気温
-                array_push($temp_mins, $items['main']['temp_min']); // 最低気温
-                array_push($weather_icons, $items['weather'][0]['icon']); // 天気マーク
-                $datetime = new DateTime();
-                $datetime->setTimestamp($items['dt'])->setTimeZone(new DateTimeZone('Asia/Tokyo')); // 日時 - 協定世界時 (UTC)を日本標準時 (JST)に変換
-                array_push($dates, $datetime->format('Y年m月d日')); // 日付
-                array_push($times, $datetime->format('H:i')); // 時間
-            }
-
-            return view('locations.show', compact('temp_maxs', 'user', 'weathers', 'temp_mins', 'weather_icons', 'dates', 'times', 'tomorrow', 'location'));
+            return  $this->weatherShowService->getWeather($user, $location);
         } catch (Exception $e) {
-            // 例外発生時の処理
             $error[] = 'システムの都合上、この位置情報の天気を取得できません。大変申し訳ありません。';
             return redirect()->route('users.show', ['name' => $request->user()->name])->withInput()->withErrors($error);
         }
