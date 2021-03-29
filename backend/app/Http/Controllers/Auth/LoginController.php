@@ -31,19 +31,6 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
-    /**
-     * Where to redirect users after login.
-     *
-     * @var string
-     */
-    public function redirectTo()
-    {
-        if (!Auth::user()) {
-            return '/';
-        }
-        return
-            route('users.show', ['name' => Auth::user()->name]);
-    }
 
     // ログインボタンからのリンク
     public function redirectToProvider(string $provider)
@@ -61,13 +48,13 @@ class LoginController extends Controller
             Auth::login($user);
             return redirect()->route('users.show', ['name' => $user->name]);
         }
-        $newuser = new User;
-        $newuser->name = $userSocial->getName();
-        $newuser->email = $userSocial->getEmail();
-        $newuser->save();
+        $newUser = new User;
+        $newUser->name = $userSocial->getName();
+        $newUser->email = $userSocial->getEmail();
+        $newUser->save();
 
-        Auth::login($newuser);
-        return redirect()->route('users.show', ['name' => $newuser->name]);
+        Auth::login($newUser);
+        return redirect()->route('users.show', ['name' => $newUser->name]);
     }
 
     protected function authenticated($request, $user)

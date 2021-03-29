@@ -44,8 +44,7 @@ class RegisterController extends Controller
         if (!Auth::user()) {
             return '/';
         }
-        return
-            route('users.show', ['name' => Auth::user()->name]);
+        return route('users.show', ['name' => Auth::user()->name]);
     }
 
     protected function authenticated($request, $user)

@@ -91,8 +91,6 @@ class LocationController extends Controller
             $location->tags()->attach($tag);
         });
         return redirect()->route('users.show', ['name' => $request->user()->name]);
-        $location->fill($request->all())->save();
-        return redirect()->route('users.show', ['name' => $request->user()->name]);
     }
 
     public function destroy(Request $request, Location $location)
@@ -107,8 +105,9 @@ class LocationController extends Controller
         $user = User::where('id', $location->user_id)->first();
         //天気の表示
         try {
-            return  $this->weatherShowService->getWeather($user, $location);
+            return $this->weatherShowService->getWeather($user, $location);
         } catch (Exception $e) {
+            report($e);
             $error[] = 'システムの都合上、この位置情報の天気を取得できません。大変申し訳ありません。';
             return redirect()->route('users.show', ['name' => $request->user()->name])->withInput()->withErrors($error);
         }

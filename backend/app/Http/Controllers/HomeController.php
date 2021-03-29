@@ -24,7 +24,6 @@ class HomeController extends Controller
         if (!Auth::user()) {
             return view('home');
         }
-        return
-            redirect()->route('users.show', ['name' => Auth::user()->name]);
+        return redirect()->route('users.show', ['name' => Auth::user()->name]);
     }
 }
