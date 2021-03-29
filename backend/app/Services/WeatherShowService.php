@@ -12,7 +12,7 @@ class WeatherShowService
     private $getWeatherService;
 
     public function __construct(
-        weatherLocalizationService $weather_localization_service,
+        WeatherLocalizationService $weather_localization_service,
         ZipcodeService $zipcode_service,
         GetWeatherService $get_weather_service
     ) {
