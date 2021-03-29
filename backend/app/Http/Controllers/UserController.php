@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Repositories\User\UserDataAccessRepositoryInterface as UserDataAccess;
 use App\Services\UserService;
-use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Repositories\User\UserDataAccessRepositoryInterface as UserDataAccess;
 
 class UserController extends Controller
 {
@@ -24,6 +23,7 @@ class UserController extends Controller
     public function show(Request $request, string $name)
     {
         $user = $this->User->getUser($request->name);
+
         if (Auth::id() === $user->id) {
             $locations = $this->userService->getLocation($user);
             return view('users.show', compact('locations', 'user'));
