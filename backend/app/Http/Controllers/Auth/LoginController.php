@@ -31,7 +31,6 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
-
     // ログインボタンからのリンク
     public function redirectToProvider(string $provider)
     {

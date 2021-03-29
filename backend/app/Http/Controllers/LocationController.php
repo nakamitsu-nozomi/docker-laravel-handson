@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LocationRequest;
 use App\Location;
-use App\PostalCode;
 use App\Services\WeatherShowService;
 use App\Tag;
 use App\User;
@@ -36,23 +35,11 @@ class LocationController extends Controller
         $location->zipcode = $request->zipcode;
         $location->address = $request->addr11;
         $location->user_id = $request->user()->id;
-        $zipcode = $location->zipcode;
-        $first_code = intval(substr($zipcode, 0, 3));
-        $last_code = intval(substr($zipcode, 3));
-        $searched_zipcode = PostalCode::whereSearch($first_code, $last_code)->first();
-
-        if ($searched_zipcode === null) {
-            $error[] = 'この郵便番号は実在しません';
-            return redirect('locations/create')->withInput()->withErrors($error);
-        }
-
         $location->save();
         $request->tags->each(function ($tagName) use ($location) {
             $tag = Tag::firstOrcreate(['name' => $tagName]);
             $location->tags()->attach($tag);
         });
-        return redirect()->route('users.show', ['name' => $request->user()->name]);
-        $location->save();
         return redirect()->route('users.show', ['name' => $request->user()->name]);
     }
 
@@ -74,16 +61,6 @@ class LocationController extends Controller
         $location->zipcode = $request->zipcode;
         $location->address = $request->addr11;
         $location->user_id = $request->user()->id;
-        $zipcode = $location->zipcode;
-        $first_code = intval(substr($zipcode, 0, 3));
-        $last_code = intval(substr($zipcode, 3));
-        $searched_zipcode = PostalCode::whereSearch($first_code, $last_code)->first();
-
-        if ($searched_zipcode === null) {
-            $error[] = 'この郵便番号は実在しません';
-            return redirect('locations/create')->withInput()->withErrors($error);
-        }
-
         $location->fill($request->all())->save();
         $location->tags()->detach();
         $request->tags->each(function ($tagName) use ($location) {
