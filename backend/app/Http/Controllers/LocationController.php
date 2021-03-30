@@ -79,6 +79,7 @@ class LocationController extends Controller
     public function show(Request $request, Location $location)
     {
         // ユーザーの表示
+
         $user = User::where('id', $location->user_id)->first();
         //天気の表示
         try {
