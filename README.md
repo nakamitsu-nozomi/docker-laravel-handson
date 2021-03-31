@@ -1,10 +1,19 @@
 
 # お天気アプリ
 
+# 本番環境
+http://weather-otenki-weather.work
 
-#port
+# ローカル環境
 http://127.0.0.1:10080/
 https://localhost
+
+# 開発環境
+PHP 7.4.16 
+Laravel  6.20.17
+mysql   8.0.23
+nginx 1.18.0
+docker
 
 #phpmyadmin
 http://127.0.0.1:8080/
